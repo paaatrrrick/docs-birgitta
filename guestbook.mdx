@@ -1,0 +1,90 @@
+---
+title: "Guestbook"
+description: "Enable the guestbook on your personal website, configure blocked words and approval, moderate entries, and learn its limits, reactions and RSS link."
+---
+
+The guestbook adds a `/guestbook` page where visitors sign with a name and a short message. Entries appear newest first, and visitors can react to them with emoji.
+
+The guestbook is off by default. While it is off, `/guestbook` and `/guestbook/moderation` show the site's not-found page.
+
+## Enable the guestbook
+
+Set `REACT_APP_GUESTBOOK` to `on` in the environment you build the site from, for example in a `.env` file at the project root:
+
+```bash .env
+REACT_APP_GUESTBOOK=on
+```
+
+Create React App reads `REACT_APP_*` variables when the app starts or builds. Restart `npm start` or run `npm run build` again after you change them. Any value other than `on` keeps the guestbook off.
+
+<Warning>
+Entries are saved in the visitor's browser `localStorage`, not on a server. Each visitor only sees entries signed from their own browser, and clearing site data removes them. The moderation queue reads the same browser storage, so you can only moderate entries stored in the browser you open it in.
+</Warning>
+
+## Configuration
+
+| Variable | Values | Default | Effect |
+| --- | --- | --- | --- |
+| `REACT_APP_GUESTBOOK` | `on` | Off | Turns on the `/guestbook` and `/guestbook/moderation` pages. |
+| `REACT_APP_GUESTBOOK_BLOCKED_WORDS` | Comma-separated words | None | Sends entries that contain any of these words to the moderation queue instead of publishing them. |
+| `REACT_APP_GUESTBOOK_REQUIRE_APPROVAL` | `true` | Off | Sends every new entry to the moderation queue. |
+
+```bash .env
+REACT_APP_GUESTBOOK=on
+REACT_APP_GUESTBOOK_BLOCKED_WORDS=spam,casino,crypto
+REACT_APP_GUESTBOOK_REQUIRE_APPROVAL=true
+```
+
+### Blocked words
+
+The site trims each word in `REACT_APP_GUESTBOOK_BLOCKED_WORDS` and compares it case-insensitively against both the name and the message. Matching is by substring, so `spam` also flags `spammer`. A flagged entry is still saved. It waits in the moderation queue until you publish or hide it.
+
+### Require approval
+
+When `REACT_APP_GUESTBOOK_REQUIRE_APPROVAL` is `true`, no entry appears on `/guestbook` until you publish it. Only the exact value `true` turns this on. The intro text on the guestbook page still says entries show up right away, so visitors don't see that their entry is waiting for review.
+
+## Signing the guestbook
+
+Visitors fill in **Name** and **Message**, then click **Sign the guestbook**. The site trims surrounding spaces and enforces these limits:
+
+| Limit | Value |
+| --- | --- |
+| Name length | 1 to 40 characters |
+| Message length | 1 to 280 characters |
+| Entries per page | 20 |
+| Signatures per browser per day | 3 |
+
+The message field shows a live character count. When a check fails, the form shows the reason above the button:
+
+- **Add your name.** or **Write a message.** when a field is empty.
+- **Names are limited to 40 characters.** or **Messages are limited to 280 characters.** when a field is too long.
+- **You can sign 3 times a day. Come back tomorrow.** after the daily limit.
+
+The daily limit resets at midnight UTC. The site counts signatures in browser storage, so it applies per browser rather than per person.
+
+When there are more than 20 published entries, **Newer** and **Older** buttons and a **Page X of Y** indicator appear below the list. The total entry count above the list includes published entries only.
+
+## Moderation
+
+Open `/guestbook/moderation` to review entries waiting for approval. Each entry has two buttons:
+
+- **Publish** shows the entry on `/guestbook`.
+- **Hide** keeps the entry out of the guestbook. Hidden entries stay in storage but never appear on the page or in the queue again.
+
+When the queue is empty, the page shows **Nothing waiting for review.**
+
+<Note>
+The moderation page has no login and isn't linked from the site. Anyone who knows the URL can open it in their own browser.
+</Note>
+
+## Reactions
+
+Every published entry shows four reaction buttons: 👋, ❤️, 🔥 and 😂. Clicking one adds one to that emoji's count. There is no limit per visitor, and the counts are stored in the same browser storage as the entries.
+
+## RSS feed
+
+The guestbook page links to an RSS feed at `/guestbook/feed.xml`. The feed is meant to list the 20 newest published entries, with the signer's name as the item title and the message as the description.
+
+<Warning>
+Nothing in the site's build writes or serves `/guestbook/feed.xml` yet, so the **RSS** link on the guestbook page doesn't return a feed. Because entries live in each visitor's browser, a feed generated at build time would have no entries to list.
+</Warning>
