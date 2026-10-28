@@ -1,0 +1,67 @@
+---
+title: "Content and component options"
+description: "Reference for optional project and timeline content fields and the post byline props you can set to control what each page shows on the personal website."
+---
+
+These options are all optional. Entries and components that leave them out render the same as before.
+
+## Projects
+
+Project entries live in the projects content constants and render as cards on `/projects`.
+
+| Field | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `featured` | boolean | `false` | Sorts the project to the top of `/projects` and shows a **Featured** badge next to its status. Projects that aren't featured keep their array order. |
+| `year` | number or string | none | Shows the year after the tagline, separated by `·`. |
+| `repo` | URL string | none | Adds a **Source code** link below the description that opens the URL in a new tab. |
+
+```js
+{
+  name: "My project",
+  // ...existing fields
+  featured: true,
+  year: 2024,
+  repo: "https://github.com/you/my-project",
+}
+```
+
+## Timeline
+
+Work entries live in the work content constants and render on the timeline page.
+
+| Field | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `link` | URL string | none | Turns the role title into a link, for example to the company's site. The link opens in a new tab. |
+| `skills` | array of strings | none | Shows the skills as a short list under the role title. An empty array shows nothing. |
+
+```js
+{
+  title: "Software engineer",
+  // ...existing fields
+  link: "https://example.com",
+  skills: ["TypeScript", "Rust"],
+}
+```
+
+## Post byline
+
+The `PostMeta` component renders a post's byline: the date, the estimated reading time and the view count, in that order. Use these props to choose which segments appear and how they look.
+
+| Prop | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `showDate` | boolean | `true` | Set to `false` to hide the date, for example on evergreen pages. |
+| `showReadingTime` | boolean | `true` | Set to `false` to hide the reading time, for example on short posts. |
+| `showViews` | boolean | `true` | Set to `false` to hide the view count, for example on drafts. |
+| `separator` | string | `·` | Text shown between the visible segments. |
+| `className` | string | `""` | Extra CSS class added to the byline wrapper alongside `post-meta`. |
+
+The separator only appears between segments that are shown. A post without a `date` skips the date even when `showDate` is `true`.
+
+```jsx
+<PostMeta
+  post={post}
+  showViews={false}
+  separator="|"
+  className="compact"
+/>
+```
