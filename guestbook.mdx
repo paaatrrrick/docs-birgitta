@@ -3,7 +3,7 @@ title: "Guestbook"
 description: "Enable the guestbook on your personal website, configure blocked words and approval, moderate entries, and learn its limits, reactions and RSS link."
 ---
 
-The guestbook adds a `/guestbook` page where visitors sign with a name and a short message. Entries appear newest first, and visitors can react to them with emoji.
+The guestbook adds a `/guestbook` page where visitors sign with a name and a short message. Entries appear newest first by default, or sorted by most reactions, and visitors can react to them with emoji.
 
 The guestbook is off by default. While it is off, `/guestbook` and `/guestbook/moderation` show the site's not-found page.
 
@@ -80,6 +80,8 @@ The moderation page has no login and isn't linked from the site. Anyone who know
 ## Reactions
 
 Every published entry shows four reaction buttons: 👋, ❤️, 🔥 and 😂. Clicking one adds one to that emoji's count. There is no limit per visitor, and the counts are stored in the same browser storage as the entries.
+
+A **Newest** / **Most reactions** toggle sits above the entries, next to the entry count. **Newest** is the default and keeps the newest-first order. **Most reactions** orders entries by their total count across all four emoji, highest first. It only reorders the up to 20 entries on the current page, so **Newer** and **Older** still page in newest-first order. The choice resets to **Newest** when the page reloads.
 
 ## RSS feed
 
